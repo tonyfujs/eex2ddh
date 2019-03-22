@@ -6,19 +6,24 @@
 #' @export
 #'
 
-get_eex_datasets_list <- function(token) {
+get_eex_datasets <- function(token) {
   #TODO
   # Need to follow-up with Derlinix about setting eex_user_origin flag
+  # resp <- connect_eex(path = "/api/action/package_search?fq=eex_user_origin:True%20organization:world-bank-grou")
   
   # Retreive World Bank datasets that were created in the Energy Info portal
-  # resp <- connect_eex(path = "/api/action/package_search?fq=eex_user_origin:True%20organization:world-bank-grou")
   resp <- connect_eex(path = "/api/action/package_search?fq=organization:world-bank-grou")
+  
+  # Retrieve ids for datasets
   eex_internal_id <- purrr::map_chr(resp, 'id')
+  
+  # Retrieve updated dates
   eex_internal_updated <- purrr::map_chr(resp, 'metadata_modified')
   
   # Clean date format
   eex_internal_updated <- purrr::map_chr(eex_internal_updated, clean_date)
 
+  # Create data frame
   out <- data.frame(eex_internal_id, eex_internal_updated, stringsAsFactors = FALSE)
   
   return(out)
