@@ -1,4 +1,4 @@
-#' get_eex_datasets_list
+#' get_eex_datasets
 #'
 #' @param token character: Energy.Info API authentication token
 #'
