@@ -22,7 +22,7 @@ get_eex_datasets <- function(token) {
   
   # Clean date format
   eex_internal_updated <- purrr::map_chr(eex_internal_updated, clean_date)
-
+  
   # Create data frame
   out <- data.frame(eex_internal_id, eex_internal_updated, stringsAsFactors = FALSE)
   
