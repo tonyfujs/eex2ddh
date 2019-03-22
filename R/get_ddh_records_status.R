@@ -43,8 +43,6 @@ get_ddh_records_status <- function(root_url = dkanr::get_url(),
   return(full_list)
 }
 
-
-
 get_finance_datasets <- function(root_url = dkanr::get_url(),
                                  credentials = list(cookie = dkanr::get_cookie(),
                                                     token = dkanr::get_token())) {
