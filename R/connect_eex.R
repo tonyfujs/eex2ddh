@@ -21,7 +21,7 @@ connect_eex <- function(path, query = NULL, root = "https://energydata.info", to
                                                    'charset' = "utf-8")),
                     httr::accept_json())
   # Return useful message on error
-  httr::stop_for_status(resp, task = 'complete request to Microdata library API\n')
+  httr::stop_for_status(resp, task = 'complete request to Energy Info API\n')
   
   # CHECK: datatype is .JSON
   if (httr::http_type(resp) != "application/json") {
