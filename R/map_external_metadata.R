@@ -1,6 +1,6 @@
-#' map_license
+#' map_external_metadata
 #'
-#' Map License values from the EEX to DDH
+#' Map External Metadata values from the EEX to DDH
 #'
 #' @param metadata_list list: output of extract_eex_metadata()
 #' @param output list: output of map_eex_metadata_dataset()
@@ -9,7 +9,7 @@
 #' @export
 #'
 
-map_license <- function(metadata_list, output) {
+map_external_metadata <- function(metadata_list, output) {
   
   external_data <- list()
   
