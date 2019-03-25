@@ -1,6 +1,6 @@
 #' map_eex_metadata_dataset
 #'
-#' Extract specific metadata from the Finance API JSON response
+#' Map simple values from the EEX to DDH
 #'
 #' @param metadata_list list: output of extract_eex_metadata()
 #'
@@ -15,10 +15,11 @@ map_eex_metadata_dataset <- function(metadata_list) {
   lkup_values   <- dataset_master_lookup
   output        <- list()
   
-  # Ignore Country and Region
+  # Ignore Country, Region, License
   ignore <- c(
     "region",
-    "country_code"
+    "country_code",
+    "license_title"
   )
   
   # Map values to DDH controlled vocabulary ---------------------------------
@@ -50,6 +51,22 @@ map_eex_metadata_dataset <- function(metadata_list) {
     else{
       output[[constant_metadata[i,]$machine_name]] <- constant_metadata[i,]$list_value_name
     }
+  }
+  
+  # Add Country, Region, License
+  output <- map_multiple_values(metadata_list, output, "country_code", "field_wbddh_country")
+  output <- map_multiple_values(metadata_list, output, "region", "field_wbddh_region")
+  output <- map_multiple_values(metadata_list, output, "license_title", "field_license_wbddh")
+  
+  # Add Default values for empty fields
+  if(!("field_wbddh_country" %in% names(output))){
+    output[["field_wbddh_country"]] <- "Region/Country not specified"
+  }
+  if(!("field_wbddh_region" %in% names(output))){
+    output[["field_wbddh_region"]] <- "Region not specified"
+  }
+  if(!("field_license_wbddh" %in% names(output))){
+    output[["field_license_wbddh"]] <- "Custom License"
   }
   
   return(output)

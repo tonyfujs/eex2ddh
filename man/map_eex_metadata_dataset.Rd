@@ -13,5 +13,5 @@ map_eex_metadata_dataset(metadata_list)
 list
 }
 \description{
-Extract specific metadata from the Finance API JSON response
+Map simple values from the EEX to DDH
 }
