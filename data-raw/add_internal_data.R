@@ -13,8 +13,28 @@ basic_json_mapping    <- readxl::read_excel("./data-raw/eex_ddh_JSON_lookup_basi
 complex_lookup        <- readxl::read_excel("./data-raw/eex_ddh_JSON_lookup_complex.xlsx")
 constant_lookup       <- readxl::read_excel("./data-raw/constant_vocab_mapping.xlsx")
 
+# Following fields are not present in ddhconnect::get_lovs()
+ignore <- c(
+  "field_ddh_harvest_sys_id",
+  "title",
+  "body",
+  "field_wbddh_release_date",
+  "field_wbddh_end_date",
+  "field_ddh_external_contact_email",
+  "field_wbddh_start_date",
+  "field_wbddh_publisher_name",
+  "field_wbddh_source",
+  "field_wbddh_modified_date",
+  "body",
+  "title",
+  "field_upload"
+)
+
 # Check for invalid values (i.e values in machine_names that are not in ddh_lovs for non-free-text fields)
-invalid_controlled_vocab  <- eex_ddh_vocab_df %>% anti_join(ddh_lovs_df, by = "machine_name") 
+invalid_controlled_vocab  <- eex_ddh_vocab_df %>%
+  filter(!(machine_name %in% ignore)) %>%
+  anti_join(ddh_lovs_df, by = "machine_name")
+
 invalid_complex           <- complex_lookup %>% filter(machine_name != "field_external_metadata") %>%
   anti_join(ddh_lovs_df, by = "machine_name")
 
@@ -31,8 +51,8 @@ master_basic_lookup  <- rbind(eex_ddh_vocab_df, constant_lookup)
 
 # Add JSON fields
 # The rows with NA as JSON fields have the constant metadata values
-basic_json_mapping   <- basic_json_mapping %>% select(machine_name, eex_field_JSON)
-master_basic_lookup  <- master_basic_lookup %>% left_join(basic_json_mapping, by = "machine_name")
+basic_json_mapping   <- basic_json_mapping %>% select(-Notes)
+master_basic_lookup  <- master_basic_lookup %>% full_join(basic_json_mapping, by = c("machine_name","is_dataset"))
 
 # Create lookup for both resource and dataset
 dataset_master_lookup  <- master_basic_lookup %>% filter(is_dataset == TRUE) %>% select(-is_dataset)
