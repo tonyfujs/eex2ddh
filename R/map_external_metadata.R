@@ -19,14 +19,23 @@ map_external_metadata <- function(metadata_list, output) {
   }
   
   # Add Topic
-  external_data[["Topics"]] <- unlist(metadata_list$topic)
+  external_data[["Topic"]] <- unlist(metadata_list$topic)
   
   # Add Group
   if(metadata_list$group != ""){
     external_data[["Group"]] <- metadata_list$group
   }
   
-  output[["field_external_metadata"]] <- external_data
+  # Create Vector of characters
+  temp <- c()
+  for(i in seq_along(external_data)){
+
+    temp <- c(temp, 
+                paste(names(external_data[i]), paste0(external_data[[i]], collapse = ", "), sep = ": ")
+              )
+  }
+  
+  output[["field_external_metadata"]] <- paste(temp, collapse = "\n ")
   
   return(output)
 }
