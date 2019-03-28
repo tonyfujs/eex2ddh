@@ -34,10 +34,35 @@ clean_date <- function(dt) {
   }
   else{
     dt <- gsub("T", " ", dt)
+    dt <- strftime(dt, format = "%Y-%m-%d %H:%M:%S")
   }
+  
+
   return(dt)
 }
 
 is_year <- function(dt) {
   return(!is.na(as.numeric(dt)) && as.numeric(dt) >= 1900 && as.numeric(dt) <= 2100)
 }
+
+safe_see_if <- function(file_value, orig_value, field_name) {
+  assert_result <- assertthat::see_if(is.same(file_value, orig_value, field_name))
+  if(!assert_result){
+    warning(paste0(field_name, ": The updated value is not equal to the passed value."))
+  }
+}
+
+is.same <- function(file_value, orig_value, field_name) {
+  is.empty(file_value) && is.empty(orig_value) ||
+    is.character(file_value) && is.character(orig_value) && (gsub("[\n]", "", file_value) == gsub("[\n]", "", orig_value))
+  
+}
+
+is.empty <- function(s) {
+  is.null(s) || s == ""
+}
+
+is_blank <- function(input){
+  return(gtools::invalid(input) || all(input == ""))
+}
+
