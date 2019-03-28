@@ -35,6 +35,9 @@ map_eex_metadata_dataset <- function(metadata_list) {
   if(!is.null(output[["field_wbddh_start_date"]])){
     output[["field_wbddh_start_date"]] <- clean_date(output[["field_wbddh_start_date"]])
   }
+  if(!is.null(output[["field_wbddh_end_date"]])){
+    output[["field_wbddh_end_date"]] <- clean_date(output[["field_wbddh_end_date"]])
+  }
   output[["field_wbddh_release_date"]] <- clean_date(output[["field_wbddh_release_date"]])
   output[["field_wbddh_modified_date"]] <- clean_date(output[["field_wbddh_modified_date"]])
   

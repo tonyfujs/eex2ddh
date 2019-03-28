@@ -35,7 +35,7 @@ map_external_metadata <- function(metadata_list, output) {
               )
   }
   
-  output[["field_external_metadata"]] <- paste(temp, collapse = "\n ")
+  output[["field_external_metadata"]] <- paste(temp, collapse = ". ")
   
   return(output)
 }
