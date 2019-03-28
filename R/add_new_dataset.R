@@ -24,7 +24,7 @@ add_new_dataset <- function(metadata_list,
   metadata_dataset  <- map_eex_metadata_dataset(metadata_list)
   
   # Map external metadata for Dataset
-  metadata_dataset  <- map_external_metadata(metadata_list, metadata_temp)
+  metadata_dataset  <- map_external_metadata(metadata_list, metadata_dataset)
   
   # Format raw metadata for Resources
   metadata_resources <- map_eex_metadata_resource(metadata_list)
@@ -45,19 +45,6 @@ add_new_dataset <- function(metadata_list,
                                          credentials = credentials)
   
   # Create Resources
-  
-  # create dataset
-  metadata_temp_dataset <- filter_dataset_fields(metadata_temp, ddh_fields)
-  json_dat <- ddhconnect::create_json_dataset(values = metadata_temp_dataset,
-                                              publication_status = "published",
-                                              ddh_fields = ddh_fields,
-                                              lovs = lovs,
-                                              root_url = root_url)
-  resp_dat <- ddhconnect::create_dataset(body = json_dat,
-                                         root_url = root_url,
-                                         credentials = credentials)
-  
-  # create resource
   for (i in seq_along(metadata_resources)){
     json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
                                                  dataset_nid = resp_dat$nid,
