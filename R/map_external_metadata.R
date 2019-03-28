@@ -11,6 +11,7 @@
 
 map_external_metadata <- function(metadata_list, output) {
   
+  metadata_list <- metadata_list$result 
   external_data <- list()
   
   # Check if license is Custom License
