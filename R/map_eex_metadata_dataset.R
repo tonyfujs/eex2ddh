@@ -56,18 +56,15 @@ map_eex_metadata_dataset <- function(metadata_list) {
     }
   }
   
-  # Add Country, Region, License
-  output <- map_multiple_values(metadata_list, output, "country_code", "field_wbddh_country")
-  output <- map_multiple_values(metadata_list, output, "region", "field_wbddh_region")
-  output <- map_multiple_values(metadata_list, output, "license_title", "field_license_wbddh")
+  # Add Country and License
+  output <- map_country_values(metadata_list, output)
+  output <- map_license_values(metadata_list, output)
   
   # Add Default values for empty fields
   if(!("field_wbddh_country" %in% names(output))){
     output[["field_wbddh_country"]] <- "Region/Country not specified"
   }
-  if(!("field_wbddh_region" %in% names(output))){
-    output[["field_wbddh_region"]] <- "Region not specified"
-  }
+  
   if(!("field_license_wbddh" %in% names(output))){
     output[["field_license_wbddh"]] <- "Custom License"
   }
