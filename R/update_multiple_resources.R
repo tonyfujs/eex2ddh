@@ -23,8 +23,24 @@ update_multiple_resources <- function(dataset_nid,
                                                token = dkanr::get_token())) {
   
   updated <- list()
-  # Check whether there are outdated resources present in DDH (i.e Resources in DDH that are not in EEX)
-  if(length(resource_nid) > length(metadata_resources)){
+  # Check whether number of resources in DDH and Energy Portal are same
+  if(length(resource_nid) == length(metadata_resources)){
+    # Update resources in DDH  
+    for(i in seq_along(metadata_resources)){
+      json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
+                                                   dataset_nid = dataset_nid,
+                                                   publication_status = "published",
+                                                   ddh_fields = ddh_fields,
+                                                   lovs = lovs,
+                                                   root_url = root_url)
+      
+      ddhconnect::update_resource(nid = resource_nid[i],
+                                  body = json_res,
+                                  root_url = root_url,
+                                  credentials = credentials)
+    }
+    
+  } else if(length(resource_nid) > length(metadata_resources)){
     # Update resources in DDH  
     for(i in seq_along(metadata_resources)){
       json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
@@ -48,10 +64,8 @@ update_multiple_resources <- function(dataset_nid,
     lapply(to_remove, function(x){
       ddhconnect::delete_dataset(x)
     })
-  }
-  
-  # Check whether there are more resources present in EEX than DDH
-  if(length(resource_nid) < length(metadata_resources)){
+    
+  } else if (length(resource_nid) < length(metadata_resources)){
     # Update resources in DDH
     for (i in seq_along(resource_nid)) {
       json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
