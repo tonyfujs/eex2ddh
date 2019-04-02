@@ -53,7 +53,14 @@ map_eex_metadata_resource <- function(metadata_list) {
     # Order resources
     temp[["field_resource_weight"]] <- i
     
+    # Add constant metadata
+    constant_metadata <-   lkup_values %>% filter(is.na(eex_value), is.na(eex_field_JSON))
+    for (k in 1:nrow(constant_metadata)){
+      temp[[constant_metadata[k,]$machine_name]] <- constant_metadata[k,]$list_value_name
+    }
+    
     output[[i]] <- temp
+    
   }
   
   # Check if Geospatial Data Type
@@ -63,11 +70,6 @@ map_eex_metadata_resource <- function(metadata_list) {
     output[["field_wbddh_data_type"]] <- "Other"
   }
   
-  # Add constant metadata
-  constant_metadata <-   lkup_values %>% filter(is.na(eex_value), is.na(eex_field_JSON))
-  for (i in 1:nrow(constant_metadata)){
-    output[[constant_metadata[i,]$machine_name]] <- constant_metadata[i,]$list_value_name
-  }
   
   return(output)
 }

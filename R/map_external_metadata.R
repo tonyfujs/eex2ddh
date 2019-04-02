@@ -23,8 +23,10 @@ map_external_metadata <- function(metadata_list, output) {
   external_data[["Topic"]] <- unlist(metadata_list$topic)
   
   # Add Group
-  if(metadata_list$group != ""){
-    external_data[["Group"]] <- metadata_list$group
+  if(length(metadata_list$group) > 0){
+    if(metadata_list$group != ""){
+      external_data[["Group"]] <- metadata_list$group
+    }
   }
   
   # Create Vector of characters
