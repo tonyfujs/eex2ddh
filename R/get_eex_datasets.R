@@ -9,10 +9,10 @@
 get_eex_datasets <- function(token) {
   #TODO
   # Need to follow-up with Derlinix about setting eex_user_origin flag
-  # resp <- connect_eex(path = "/api/action/package_search?fq=eex_user_origin:True%20organization:world-bank-grou")
+  # resp <- connect_eex(path = "/api/action/package_search?fq=eex_user_origin:True%20organization:world-bank-grou&rows=1000")
   
   # Retreive World Bank datasets that were created in the Energy Info portal
-  resp <- connect_eex(path = "/api/action/package_search?fq=organization:world-bank-grou")
+  resp <- connect_eex(path = "/api/action/package_search?fq=organization:world-bank-grou&rows=1000")
   
   # Retrieve ids for datasets
   eex_internal_id <- purrr::map_chr(resp, 'id')
