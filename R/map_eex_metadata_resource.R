@@ -37,7 +37,7 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
   for(i in seq_along(metadata_list$resources)){
     temp                <- list()
     resource_meta_1     <- metadata_list$resources[[i]]
-    resource_type[[i]]  <-  tolower(resource_meta$format)
+    resource_type[[i]]  <- tolower(resource_meta_1$format)
     
     # Map values to DDH controlled vocabulary ---------------------------------
     resource_meta <- resource_meta_1[lkup_values$eex_field_JSON]
