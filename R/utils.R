@@ -81,6 +81,8 @@ update_current_resources <- function(dataset_nid, metadata_resources, current){
                                              body = json_res,
                                              root_url = root_url,
                                              credentials = credentials)
+     print("Resource updated: ")
+     print(resp_res)
    }
  }
 }
@@ -99,6 +101,8 @@ add_new_resources <- function(metadata_resources, new){
       resp_res <- ddhconnect::create_resource(body = json_res,
                                               root_url = root_url,
                                               credentials = credentials)
+      print("Resource added: ")
+      print(resp_res)
     }
   }
 }

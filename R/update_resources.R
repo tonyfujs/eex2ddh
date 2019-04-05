@@ -58,12 +58,12 @@ update_resources <- function(dataset_nid,
    ddhconnect::delete_dataset(x)
  })
  
+ print("Old resources removed")
+ 
  # Update current resources
  update_current_resources(metadata_resources, current)
  
  # Add new resources
  add_new_resources(metadata_resources, new)
- 
- print("Resources updated successfully")
  
 }
