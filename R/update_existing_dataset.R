@@ -54,7 +54,7 @@ update_existing_dataset <- function(metadata_list,
   
   resource_nid <- ddhconnect::get_resource_nids(metadata_dataset_ddh)
     
-  update_resources(resp_dat$nid, resource_nid, metadata_resources)
+  update_resources_2(resp_dat$nid, resource_nid, metadata_resources)
   
   # test created dataset
   metadata_dataset_test <- ddhconnect::get_metadata(nid = resp_dat$nid,
