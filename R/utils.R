@@ -88,7 +88,7 @@ update_current_resources <- function(dataset_nid, metadata_resources, current){
 }
 
 # Add new resources to DDH
-add_new_resources <- function(metadata_resources, new){
+add_new_resources <- function(dataset_nid, metadata_resources, new){
   for(i in seq_along(metadata_resources)){
     if(metadata_resources[[i]]$field_ddh_harvest_sys_id %in% new){
       json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
