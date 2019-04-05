@@ -4,10 +4,12 @@
 \alias{map_eex_metadata_resource}
 \title{map_eex_metadata_resource}
 \usage{
-map_eex_metadata_resource(metadata_list)
+map_eex_metadata_resource(metadata_list, lovs)
 }
 \arguments{
 \item{metadata_list}{list: output of extract_eex_metadata()}
+
+\item{lovs}{dataframe: lookup table of the data catalog tids and values}
 }
 \value{
 list

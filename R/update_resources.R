@@ -48,7 +48,6 @@ update_resources <- function(dataset_nid,
  old    <- list()
  for(k in seq_along(harv_ids)){
    if(!(harv_ids[[k]] %in% current) & !(harv_ids[[k]] %in% new)){
-     count        <- count + 1
      old[[names(harv_ids[k])]] <- harv_ids[[k]] 
    }
  }
@@ -58,8 +57,9 @@ update_resources <- function(dataset_nid,
    ddhconnect::delete_dataset(x)
  })
  
- print("Old resources removed")
- 
+ if(length(old) > 0 ){
+    print("Old resources removed")
+ }
  # Update current resources
  update_current_resources(dataset_nid, metadata_resources,
                           current, ddh_fields, lovs,
