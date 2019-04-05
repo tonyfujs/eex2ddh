@@ -53,26 +53,8 @@ update_existing_dataset <- function(metadata_list,
                                                credentials = credentials)
   
   resource_nid <- ddhconnect::get_resource_nids(metadata_dataset_ddh)
-
-  # Makesure Resource is Finances Query Tool
-  if(length(resource_nid) > 1){
     
-    update_multiple_resources(resp_dat$nid, resource_nid, metadata_resources)
-    
-  } else{
-    
-    json_res <- ddhconnect::create_json_resource(values = metadata_resources[[1]],
-                                                 dataset_nid = resp_dat$nid,
-                                                 publication_status = "published",
-                                                 ddh_fields = ddh_fields,
-                                                 lovs = lovs,
-                                                 root_url = root_url)
-    
-    resp_res <- ddhconnect::update_resource(nid = resource_nid,
-                                            body = json_res,
-                                            root_url = root_url,
-                                            credentials = credentials)
-  }
+  update_resources(resp_dat$nid, resource_nid, metadata_resources)
   
   # test created dataset
   metadata_dataset_test <- ddhconnect::get_metadata(nid = resp_dat$nid,

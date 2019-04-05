@@ -66,3 +66,39 @@ is_blank <- function(input){
   return(gtools::invalid(input) || all(input == ""))
 }
 
+# Update current resources in DDH
+update_current_resources <- function(dataset_nid, metadata_resources, current){
+ for(i in seq_along(metadata_resources)){
+   if(metadata_resources[[i]]$field_ddh_harvest_sys_id %in% current){
+     json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
+                                                  dataset_nid = dataset_nid,
+                                                  publication_status = "published",
+                                                  ddh_fields = ddh_fields,
+                                                  lovs = lovs,
+                                                  root_url = root_url)
+
+     resp_res <- ddhconnect::update_resource(nid = names(current[current %in% metadata_resources[[i]]$field_ddh_harvest_sys_id]),
+                                             body = json_res,
+                                             root_url = root_url,
+                                             credentials = credentials)
+   }
+ }
+}
+
+# Add new resources to DDH
+add_new_resources <- function(metadata_resources, new){
+  for(i in seq_along(metadata_resources)){
+    if(metadata_resources[[i]]$field_ddh_harvest_sys_id %in% new){
+      json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
+                                                   dataset_nid = dataset_nid,
+                                                   publication_status = "published",
+                                                   ddh_fields = ddh_fields,
+                                                   lovs = lovs,
+                                                   root_url = root_url)
+
+      resp_res <- ddhconnect::create_resource(body = json_res,
+                                              root_url = root_url,
+                                              credentials = credentials)
+    }
+  }
+}
