@@ -66,8 +66,12 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
     }
     
     # Map field_format
+    resource_meta_1$format <- gsub("^\\.", "",resource_meta_1$format)
+    
     if(tolower(resource_meta_1$format) %in% ddh_formats){
        temp[["field_format"]] <- toupper(ddh_formats[ddh_formats %in% tolower(resource_meta_1$format)])
+    } else if(resource_meta_1$format == "XLS" | resource_meta_1$format == "XLSX"){
+      temp[["field_format"]] <- "EXCEL"
     } else{
       temp[["field_format"]] <- "OTHER"
     }

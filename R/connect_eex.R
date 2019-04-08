@@ -11,7 +11,7 @@
 #'
 
 connect_eex <- function(path, query = NULL, root = "https://energydata.info", token = "") {
-  
+
   # Build request URL
   url <- httr::modify_url(root, path = path, query = query)
   
