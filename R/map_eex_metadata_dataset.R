@@ -5,6 +5,7 @@
 #' @param metadata_list list: output of extract_eex_metadata()
 #'
 #' @import dplyr
+#' @import purrr
 #' @return list
 #' @export
 #'
@@ -12,23 +13,24 @@
 map_eex_metadata_dataset <- function(metadata_list) {
   
   metadata_list <- metadata_list$result 
-  lkup_values   <- dataset_master_lookup
-  output        <- list()
+  lkup_values   <- dataset_master_lookup[is.na(dataset_master_lookup$list_value_name)
+                                         & is.na(dataset_master_lookup$eex_value)
+                                         & dataset_master_lookup$eex_field_JSON != "region",]
+  output              <- list()
+  eex_fields          <- names(metadata_list)
+  free_text_variables <- eex_fields[eex_fields %in% lkup_values$eex_field_JSON]
+  metadata_list       <- metadata_list[names(metadata_list) %in% free_text_variables]
   
-  # Ignore Country, Region, License
-  ignore <- c(
-    "region",
-    "country_code",
-    "license_title"
-  )
-  
-  # Map values to DDH controlled vocabulary ---------------------------------
+  # Map values to DDH free text field
   for(i in seq_along(metadata_list)){
-     eex_field <- metadata_list[i]
-     if((names(eex_field) %in% lkup_values$eex_field_JSON) & (eex_field != "") & !(names(eex_field) %in% ignore)){
-       machine_name <- lkup_values %>% filter(eex_field_JSON == names(eex_field)) %>% select(machine_name) %>% as.character()
-       output[[machine_name]] <- as.character(eex_field)
-     }
+    eex_field   <- metadata_list[i]
+    if(eex_field != ""){
+      machine_name <- lkup_values %>% 
+        filter(eex_field_JSON == names(eex_field)) %>% 
+        select(machine_name) %>% 
+        as.character()
+      output[[machine_name]] <- as.character(eex_field)
+    }
   }
   
   # Format Dates
@@ -45,7 +47,7 @@ map_eex_metadata_dataset <- function(metadata_list) {
   output[["body"]] <- gsub("[\n\r]", "", output[["body"]])
   
   # Add constant metadata
-  constant_metadata <-   lkup_values %>% filter(is.na(eex_value), is.na(eex_field_JSON))
+  constant_metadata <-   dataset_master_lookup[is.na(dataset_master_lookup$eex_value) & is.na(dataset_master_lookup$eex_field_JSON),]
   for (i in 1:nrow(constant_metadata)){
     # Map multiple TTL UPIs
     if(constant_metadata[i,]$machine_name == "field_wbddh_collaborator_upi"){
