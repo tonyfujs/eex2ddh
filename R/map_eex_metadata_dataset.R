@@ -5,7 +5,6 @@
 #' @param metadata_list list: output of extract_eex_metadata()
 #'
 #' @import dplyr
-#' @import purrr
 #' @return list
 #' @export
 #'
