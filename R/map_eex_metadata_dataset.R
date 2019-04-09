@@ -3,6 +3,7 @@
 #' Map simple values from the EEX to DDH
 #'
 #' @param metadata_list list: output of extract_eex_metadata()
+#' @import dplyr
 #' @return list
 #' @export
 #'
@@ -14,9 +15,9 @@ map_eex_metadata_dataset <- function(metadata_list) {
   eex_fields          <- names(metadata_list)
   
   # Filter out free text fields
-  free_text_lkup      <- dataset_master_lookup[is.na(dataset_master_lookup$list_value_name)
-                                         & is.na(dataset_master_lookup$eex_value)
-                                         & dataset_master_lookup$eex_field_JSON != "region",]
+  free_text_lkup      <- dataset_master_lookup %>% 
+    filter(is.na(list_value_name) & is.na(eex_value) & eex_field_JSON != "region")
+  
   free_text_variables <- eex_fields[eex_fields %in% free_text_lkup$eex_field_JSON]
   free_text           <- metadata_list[names(metadata_list) %in% free_text_variables]
   
@@ -24,8 +25,12 @@ map_eex_metadata_dataset <- function(metadata_list) {
   for(i in seq_along(free_text)){
     eex_field   <- free_text[i]
     if(eex_field != ""){
-      machine_name            <- as.character(free_text_lkup[free_text_lkup$eex_field_JSON == names(eex_field),"machine_name"])
-      output[[machine_name]]  <- as.character(eex_field)
+      machine_name            <-  free_text_lkup %>% filter(eex_field_JSON == names(eex_field)) %>%
+        select(machine_name)
+      
+      if(nrow(machine_name) > 0){
+        output[[as.character(machine_name)]]  <- as.character(eex_field)
+      }
     }
   }
   
@@ -43,8 +48,7 @@ map_eex_metadata_dataset <- function(metadata_list) {
   output$body <- gsub("[\n\r]", "", output$body)
   
   # Add constant metadata
-  constant_metadata <-   dataset_master_lookup[is.na(dataset_master_lookup$eex_value)
-                                               & is.na(dataset_master_lookup$eex_field_JSON),]
+  constant_metadata <- dataset_master_lookup %>% filter(is.na(eex_value) & is.na(eex_field_JSON))
   for (i in 1:nrow(constant_metadata)){
     # Map multiple TTL UPIs
     if(constant_metadata[i,]$machine_name == "field_wbddh_collaborator_upi"){

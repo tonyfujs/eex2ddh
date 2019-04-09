@@ -31,11 +31,15 @@ map_external_metadata <- function(metadata_list, output) {
   }
   
   # Check if Country mapped 
-  if(output$field_wbddh_country == "Region/Country not specified"){
+  if(length(output$field_wbddh_country) == 1){
+    if(output$field_wbddh_country == "Region/Country not specified"){
     
     external_data$`Country Code` <- c(metadata_list$country_code, metadata_list$region)
 
-  } else if(!is.null(output$invalid_country_codes)){
+    }
+  }
+  
+  if(!is.null(output$invalid_country_codes)){
     
     external_data$`Country Code` <- unlist(output$invalid_country_codes)
     output$invalid_country_codes <- NULL

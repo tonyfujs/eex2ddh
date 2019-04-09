@@ -4,6 +4,7 @@
 #'
 #' @param metadata_list list: output of extract_eex_metadata()
 #' @param lovs dataframe: lookup table of the data catalog tids and values
+#' @import dplyr
 #' @return list
 #' @export
 #'
@@ -30,17 +31,18 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
   # Loop over resources -----------------------------------------------------
   for(i in seq_along(metadata_list$resources)){
     temp                <- list()
-    resource_meta_1     <- metadata_list$resources[[i]]
-    resource_type[[i]]  <- tolower(resource_meta_1$format)
-    
+    resource_meta       <- metadata_list$resources[[i]]
+    resource_type[[i]]  <- tolower(resource_meta$format)
+
     # Map values to DDH controlled vocabulary ---------------------------------
-    resource_meta <- resource_meta_1[lkup_values$eex_field_JSON]
     for (j in seq_along(resource_meta)) {
       machine_name <- lkup_values %>%
         filter(eex_field_JSON == names(resource_meta[j])) %>%
-        select(machine_name) %>%
-        as.character()
-        temp[[machine_name]]<- resource_meta[[j]]
+        select(machine_name)
+        
+      if(nrow(machine_name) > 0){
+        temp[[as.character(machine_name)]]  <- resource_meta[[j]]
+      }
     }
     
     # Add constant metadata
@@ -54,16 +56,16 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
     temp$field_resource_weight <- i
     
     # Add constant metadata
-    constant_metadata <-   lkup_values %>% filter(is.na(eex_value), is.na(eex_field_JSON))
+    constant_metadata <- lkup_values %>% filter(is.na(eex_value) & is.na(eex_field_JSON))
     for (k in 1:nrow(constant_metadata)){
       temp[[constant_metadata[k,]$machine_name]] <- constant_metadata[k,]$list_value_name
     }
     
     # Map field_format
-    resource_meta_1$format <- gsub("^\\.", "",resource_meta_1$format)
-    if(tolower(resource_meta_1$format) %in% ddh_formats){
-       temp$field_format <- toupper(ddh_formats[ddh_formats %in% tolower(resource_meta_1$format)])
-    } else if(resource_meta_1$format == "XLS" | resource_meta_1$format == "XLSX"){
+    resource_meta$format <- gsub("^\\.", "",resource_meta$format)
+    if(tolower(resource_meta$format) %in% ddh_formats){
+       temp$field_format <- toupper(ddh_formats[ddh_formats %in% tolower(resource_meta$format)])
+    } else if(resource_meta$format == "XLS" | resource_meta$format == "XLSX"){
       temp$field_format <- "EXCEL"
     } else{
       temp$field_format <- "OTHER"
