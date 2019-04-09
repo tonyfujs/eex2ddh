@@ -24,29 +24,28 @@ map_eex_metadata_dataset <- function(metadata_list) {
   for(i in seq_along(metadata_list)){
     eex_field   <- metadata_list[i]
     if(eex_field != ""){
-      machine_name <- lkup_values %>% 
-        filter(eex_field_JSON == names(eex_field)) %>% 
-        select(machine_name) %>% 
-        as.character()
-      output[[machine_name]] <- as.character(eex_field)
+      machine_name            <- lkup_values[lkup_values$eex_field_JSON == names(eex_field),]
+      machine_name            <- as.character(machine_name[,"machine_name"])
+      output[[machine_name]]  <- as.character(eex_field)
     }
   }
   
   # Format Dates
-  if(!is.null(output[["field_wbddh_start_date"]])){
-    output[["field_wbddh_start_date"]] <- clean_date(output[["field_wbddh_start_date"]])
+  if(!is.null(output$field_wbddh_start_date)){
+    output$field_wbddh_start_date <- clean_date(output$field_wbddh_start_date)
   }
-  if(!is.null(output[["field_wbddh_end_date"]])){
-    output[["field_wbddh_end_date"]] <- clean_date(output[["field_wbddh_end_date"]])
+  if(!is.null(output$field_wbddh_end_date)){
+    output$field_wbddh_end_date <- clean_date(output$field_wbddh_end_date)
   }
-  output[["field_wbddh_release_date"]] <- clean_date(output[["field_wbddh_release_date"]])
-  output[["field_wbddh_modified_date"]] <- clean_date(output[["field_wbddh_modified_date"]])
+  output$field_wbddh_release_date   <- clean_date(output$field_wbddh_release_date)
+  output$field_wbddh_modified_date  <- clean_date(output$field_wbddh_modified_date)
   
   # Format Description 
-  output[["body"]] <- gsub("[\n\r]", "", output[["body"]])
+  output$body <- gsub("[\n\r]", "", output$body)
   
   # Add constant metadata
-  constant_metadata <-   dataset_master_lookup[is.na(dataset_master_lookup$eex_value) & is.na(dataset_master_lookup$eex_field_JSON),]
+  constant_metadata <-   dataset_master_lookup[is.na(dataset_master_lookup$eex_value)
+                                               & is.na(dataset_master_lookup$eex_field_JSON),]
   for (i in 1:nrow(constant_metadata)){
     # Map multiple TTL UPIs
     if(constant_metadata[i,]$machine_name == "field_wbddh_collaborator_upi"){
