@@ -3,29 +3,28 @@
 #' Map simple values from the EEX to DDH
 #'
 #' @param metadata_list list: output of extract_eex_metadata()
-#'
-#' @import dplyr
 #' @return list
 #' @export
 #'
 
 map_eex_metadata_dataset <- function(metadata_list) {
   
-  metadata_list <- metadata_list$result 
-  lkup_values   <- dataset_master_lookup[is.na(dataset_master_lookup$list_value_name)
-                                         & is.na(dataset_master_lookup$eex_value)
-                                         & dataset_master_lookup$eex_field_JSON != "region",]
+  metadata_list       <- metadata_list$result 
   output              <- list()
   eex_fields          <- names(metadata_list)
-  free_text_variables <- eex_fields[eex_fields %in% lkup_values$eex_field_JSON]
-  metadata_list       <- metadata_list[names(metadata_list) %in% free_text_variables]
+  
+  # Filter out free text fields
+  free_text_lkup      <- dataset_master_lookup[is.na(dataset_master_lookup$list_value_name)
+                                         & is.na(dataset_master_lookup$eex_value)
+                                         & dataset_master_lookup$eex_field_JSON != "region",]
+  free_text_variables <- eex_fields[eex_fields %in% free_text_lkup$eex_field_JSON]
+  free_text           <- metadata_list[names(metadata_list) %in% free_text_variables]
   
   # Map values to DDH free text field
-  for(i in seq_along(metadata_list)){
-    eex_field   <- metadata_list[i]
+  for(i in seq_along(free_text)){
+    eex_field   <- free_text[i]
     if(eex_field != ""){
-      machine_name            <- lkup_values[lkup_values$eex_field_JSON == names(eex_field),]
-      machine_name            <- as.character(machine_name[,"machine_name"])
+      machine_name            <- as.character(free_text_lkup[free_text_lkup$eex_field_JSON == names(eex_field),"machine_name"])
       output[[machine_name]]  <- as.character(eex_field)
     }
   }
@@ -50,8 +49,7 @@ map_eex_metadata_dataset <- function(metadata_list) {
     # Map multiple TTL UPIs
     if(constant_metadata[i,]$machine_name == "field_wbddh_collaborator_upi"){
       output[[constant_metadata[i,]$machine_name]] <- unlist(strsplit(constant_metadata[i,]$list_value_name,","))
-    }
-    else{
+    } else{
       output[[constant_metadata[i,]$machine_name]] <- constant_metadata[i,]$list_value_name
     }
   }

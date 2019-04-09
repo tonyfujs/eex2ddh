@@ -4,8 +4,6 @@
 #'
 #' @param metadata_list list: output of extract_eex_metadata()
 #' @param lovs dataframe: lookup table of the data catalog tids and values
-#'
-#' @import dplyr
 #' @return list
 #' @export
 #'
@@ -14,11 +12,7 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
   
   metadata_list <- metadata_list$result 
   lkup_values   <- resource_master_lookup
-  
-  ddh_formats   <- lovs %>% filter(machine_name == "field_format") %>% 
-    select("list_value_name") 
-  ddh_formats <- tolower(ddh_formats[["list_value_name"]])
-  
+  ddh_formats   <- tolower(lovs[lovs$machine_name == "field_format","list_value_name"])
   output        <- list()
   resource_type <- list()
   
@@ -50,14 +44,14 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
     }
     
     # Add constant metadata
-    temp[["field_wbddh_resource_type"]] <- "Download"
-    temp[["field_wbddh_data_class"]]    <- "Public"
+    temp$field_wbddh_resource_type <- "Download"
+    temp$field_wbddh_data_class    <- "Public"
     
     # Format Description 
-    temp[["body"]] <- gsub("[\n\r]", "", temp[["body"]])
+    temp$body <- gsub("[\n\r]", "", temp$body)
     
     # Order resources
-    temp[["field_resource_weight"]] <- i
+    temp$field_resource_weight <- i
     
     # Add constant metadata
     constant_metadata <-   lkup_values %>% filter(is.na(eex_value), is.na(eex_field_JSON))
@@ -67,26 +61,22 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
     
     # Map field_format
     resource_meta_1$format <- gsub("^\\.", "",resource_meta_1$format)
-    
     if(tolower(resource_meta_1$format) %in% ddh_formats){
-       temp[["field_format"]] <- toupper(ddh_formats[ddh_formats %in% tolower(resource_meta_1$format)])
+       temp$field_format <- toupper(ddh_formats[ddh_formats %in% tolower(resource_meta_1$format)])
     } else if(resource_meta_1$format == "XLS" | resource_meta_1$format == "XLSX"){
-      temp[["field_format"]] <- "EXCEL"
+      temp$field_format <- "EXCEL"
     } else{
-      temp[["field_format"]] <- "OTHER"
+      temp$field_format <- "OTHER"
     }
-    
     output[[i]] <- temp
-    
   }
   
   # Check if Geospatial Data Type
   if(length(intersect(unlist(resource_type), tolower(geo_ext))) > 0){
-    output[["field_wbddh_data_type"]] <- "Geospatial"
+    output$field_wbddh_data_type <- "Geospatial"
   } else{
-    output[["field_wbddh_data_type"]] <- "Other"
+    output$field_wbddh_data_type <- "Other"
   }
-  
   
   return(output)
 }

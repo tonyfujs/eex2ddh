@@ -4,7 +4,7 @@
 #'
 #' @param root_url character: API root URL
 #' @param credentials list: object returned by the get_credentials() function
-#'
+#' @import dplyr
 #' @return data frame
 #' @export
 #'
