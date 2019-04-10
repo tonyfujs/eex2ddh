@@ -34,7 +34,7 @@ update_existing_dataset <- function(metadata_list,
   metadata_dataset$field_wbddh_data_type   <- metadata_resources$field_wbddh_data_type
   metadata_resources$field_wbddh_data_type <- NULL
   
-  # Create Dataset
+  # Update Dataset
   json_dat <- ddhconnect::create_json_dataset(values = metadata_dataset,
                                               publication_status = "published",
                                               ddh_fields = ddh_fields,
@@ -47,7 +47,7 @@ update_existing_dataset <- function(metadata_list,
                                          root_url = root_url,
                                          credentials = credentials)
   
-  # Create Resources
+  # Update Resources
   metadata_dataset_ddh <- ddhconnect::get_metadata(nid = resp_dat$nid,
                                                root_url = root_url,
                                                credentials = credentials)
@@ -56,7 +56,7 @@ update_existing_dataset <- function(metadata_list,
     
   update_resources(resp_dat$nid, resource_nid, metadata_resources)
   
-  # test created dataset
+  # Test created dataset
   metadata_dataset_test <- ddhconnect::get_metadata(nid = resp_dat$nid,
                                                     root_url = root_url,
                                                     credentials = credentials)

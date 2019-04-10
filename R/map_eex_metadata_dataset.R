@@ -10,7 +10,6 @@
 
 map_eex_metadata_dataset <- function(metadata_list) {
   
-  metadata_list       <- metadata_list$result 
   output              <- list()
   eex_fields          <- names(metadata_list)
   

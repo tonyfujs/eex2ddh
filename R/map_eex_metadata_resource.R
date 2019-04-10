@@ -11,7 +11,6 @@
 
 map_eex_metadata_resource <- function(metadata_list, lovs) {
   
-  metadata_list <- metadata_list$result 
   lkup_values   <- resource_master_lookup
   ddh_formats   <- tolower(lovs[lovs$machine_name == "field_format","list_value_name"])
   output        <- list()

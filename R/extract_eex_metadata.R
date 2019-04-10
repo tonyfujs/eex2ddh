@@ -12,5 +12,5 @@ extract_eex_metadata <- function(eex_internal_id) {
   url      <- paste0("https://energydata.info/api/3/action/package_show?id=", eex_internal_id)
   eex_data <- jsonlite::fromJSON(url, simplifyVector = FALSE)
   
-  return(eex_data)
+  return(eex_data$result)
 }

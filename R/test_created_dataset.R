@@ -25,10 +25,10 @@ test_created_dataset <- function(dataset_metadata, metadata_list,
   machine_names_value <- c(
     "body",
     "field_ddh_harvest_sys_id",
-    "field_wbddh_acronym",
     "field_wbddh_modified_date",
     "field_wbddh_release_date",
-    "field_ddh_external_contact_email"
+    "field_ddh_external_contact_email",
+    "field_wbddh_collaborator_upi"
   )
   
   sapply(machine_names_value, check_value,
@@ -38,8 +38,6 @@ test_created_dataset <- function(dataset_metadata, metadata_list,
   
   machine_names_tid <- c(
     "field_ddh_harvest_src",
-    "field_frequency",
-    "field_granularity_list",
     "field_license_wbddh",
     "field_tags",
     "field_topic",
@@ -49,8 +47,11 @@ test_created_dataset <- function(dataset_metadata, metadata_list,
     "field_wbddh_data_class",
     "field_wbddh_data_type",
     "field_wbddh_languages_supported",
-    "field_wbddh_update_frequency"
-  )
+    "field_wbddh_ds_source",
+    "field_wbddh_economy_coverage",
+    "field_wbddh_gps_ccsas",
+    "field_wbddh_data_class"
+    )
   
   sapply(machine_names_tid, check_lov,
          dataset_metadata = dataset_metadata,

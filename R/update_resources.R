@@ -9,7 +9,6 @@
 #' @param root_url character: API root URL
 #' @param credentials list: object returned by the dkanr::get_credentials() function
 #'
-#' @import jsonlite
 #' @return list
 #' @export
 #'
@@ -58,7 +57,7 @@ update_resources <- function(dataset_nid,
  })
  
  if(length(old) > 0 ){
-    print("Old resources removed")
+   print(paste0(length(old), "  old resources removed."))
  }
  # Update current resources
  update_current_resources(dataset_nid, metadata_resources,

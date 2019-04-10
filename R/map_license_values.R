@@ -13,15 +13,15 @@
 map_license_values <- function(metadata_list, output) {
   
   lkup_values <- dataset_master_lookup
-  if(length(metadata_list[["license_title"]]) > 0){
-      temp <- lapply(metadata_list[["license_title"]], function(x){
+  if(length(metadata_list$license_title) > 0){
+      temp <- lapply(metadata_list$license_title, function(x){
         lkup_values %>%
           filter(eex_field_JSON == "license_title" & eex_value == x) %>%
-          select(list_value_name)
-        })  %>% unlist()
+          .$list_value_name
+        })
     
     if(length(temp) > 0){
-      output[["field_license_wbddh"]] <- unlist(as.character(temp))
+      output$field_license_wbddh <- temp
     }
   }
   return(output)
