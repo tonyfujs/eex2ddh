@@ -18,22 +18,15 @@ get_ddh_records_status <- function(root_url = dkanr::get_url(),
   ddh_df$ddh_updated  <- as.numeric(lubridate::ymd_hms(ddh_df$ddh_updated))
 
   # EEX harvest
-  # EEX origin False (i.e datasets not to harvest)
-  eex_origin_false_df <- get_eex_datasets(origin = "False")
-  
-  # Remove origin false datasets from DDH dataframe
-  ddh_df <- dplyr::anti_join(ddh_df, eex_origin_false_df,  by = "eex_internal_id")
-  
-  eex_df                      <- get_eex_datasets(origin = "True")
+  eex_df                      <- get_eex_datasets()
   eex_df$eex_internal_updated <- as.numeric(lubridate::ymd_hms(eex_df$eex_internal_updated))
   
   # Combine datasets
-  full_list         <- dplyr::full_join(ddh_df, eex_df, by = "eex_internal_id")
+  full_list         <- dplyr::left_join(eex_df, ddh_df, by = "eex_internal_id")
   full_list$status  <- NA
   full_list$status[is.na(full_list$ddh_nids)] <- "new"
   full_list$status[!is.na(full_list$ddh_nids) & !is.na(full_list$eex_internal_updated)] <- "current"
-  full_list$status[!is.na(full_list$ddh_nids) & is.na(full_list$eex_internal_updated)]  <- "old"
-  
+
   # Identify Current / New / Old datasets based on timestamps
   full_list$time_diff   <- abs(as.numeric(full_list$eex_internal_updated) - as.numeric(full_list$ddh_updated)) - 14400
   full_list$sync_status <- NA
