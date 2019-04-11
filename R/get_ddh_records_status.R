@@ -18,7 +18,13 @@ get_ddh_records_status <- function(root_url = dkanr::get_url(),
   ddh_df$ddh_updated  <- as.numeric(lubridate::ymd_hms(ddh_df$ddh_updated))
 
   # EEX harvest
-  eex_df                      <- get_eex_datasets()
+  # EEX origin False (i.e datasets not to harvest)
+  eex_origin_false_df <- get_eex_datasets(origin = "False")
+  
+  # Remove origin false datasets from DDH dataframe
+  ddh_df <- dplyr::anti_join(ddh_df, eex_origin_false_df,  by = "eex_internal_id")
+  
+  eex_df                      <- get_eex_datasets(origin = "True")
   eex_df$eex_internal_updated <- as.numeric(lubridate::ymd_hms(eex_df$eex_internal_updated))
   
   # Combine datasets

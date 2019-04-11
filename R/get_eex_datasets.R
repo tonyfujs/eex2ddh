@@ -1,17 +1,19 @@
 #' get_eex_datasets
 #'
 #' @param token character: Energy.Info API authentication token
+#' @param origin character:  Flag for checking whether dataset was created in Energy.Info
+#' can be either "True: or "False"
 #'
 #' @return data.frame
 #' @export
 #'
 
-get_eex_datasets <- function(token) {
+get_eex_datasets <- function(token, origin) {
   
   # Retreive World Bank datasets that were created in the Energy Info portal
   #TODO
   # Change for PROD
-  resp <- connect_eex(path = "/api/3/action/package_search?fq=eex_user_origin:True%20organization:world-bank-grou&rows=1000",
+  resp <- connect_eex(path = paste0("/api/3/action/package_search?fq=eex_user_origin:",origin,"%20organization:world-bank-grou&rows=1000"),
                       root = "https://energydata.staging.derilinx.com",
                       token = "2d451b91-95d0-4177-98fc-a4e3b0a4fd12")
   
