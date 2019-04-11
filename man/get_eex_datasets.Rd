@@ -8,9 +8,6 @@ get_eex_datasets(token, origin)
 }
 \arguments{
 \item{token}{character: Energy.Info API authentication token}
-
-\item{origin}{character:  Flag for checking whether dataset was created in Energy.Info
-can be either "True: or "False"}
 }
 \value{
 data.frame
