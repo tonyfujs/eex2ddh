@@ -41,7 +41,7 @@ update_existing_dataset <- function(metadata_list,
                                               lovs = lovs,
                                               root_url = root_url)
   
-  dataset_nid <- master[master$eex_internal_id == metadata_list$result$id, "ddh_nids"]
+  dataset_nid <- master[master$eex_internal_id == metadata_list$id, "ddh_nids"]
   resp_dat <- ddhconnect::update_dataset(nid = dataset_nid,
                                          body = json_dat,
                                          root_url = root_url,
