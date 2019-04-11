@@ -18,7 +18,7 @@ map_license_values <- function(metadata_list, output) {
         lkup_values %>%
           filter(eex_field_JSON == "license_title" & eex_value == x) %>%
           .$list_value_name
-        })
+        }) %>% unlist()
     
     if(length(temp) > 0){
       output$field_license_wbddh <- temp

@@ -51,7 +51,7 @@ map_eex_metadata_dataset <- function(metadata_list) {
   for (i in 1:nrow(constant_metadata)){
     # Map multiple TTL UPIs
     if(constant_metadata[i,]$machine_name == "field_wbddh_collaborator_upi"){
-      output[[constant_metadata[i,]$machine_name]] <- unlist(strsplit(constant_metadata[i,]$list_value_name,","))
+      output[[constant_metadata[i,]$machine_name]] <- unlist(strsplit(constant_metadata[i,]$list_value_name,", "))
     } else{
       output[[constant_metadata[i,]$machine_name]] <- constant_metadata[i,]$list_value_name
     }
