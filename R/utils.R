@@ -108,3 +108,42 @@ add_new_resources <- function(dataset_nid, metadata_resources,
   }
   print(paste0(length(new), " new resources added."))
 }
+
+map_resource_formats <- function(resource_metadata, lovs){
+  
+  # Filter out DDH extensions
+  ddh_formats         <- lovs[lovs$machine_name == "field_format","list_value_name"]
+
+  # Seperate lower case and upper case formats for DDH
+  lower_case_formats  <- c("docx","data","xlsx","html","txt")
+  upper_case_formats  <- ddh_formats[!ddh_formats %in% lower_case_formats]
+  
+  # Account for Geospatial formats
+  geo_formats         <- c("GeoJSON", "SHP ZIP", "KML", "GeoTIFF")
+  upper_case_formats  <- upper_case_formats[!upper_case_formats %in% geo_formats]
+  
+  # Map field_format
+  resource_metadata$format <- gsub("^\\.", "", resource_metadata$format)
+  if(toupper(resource_metadata$format) %in%  upper_case_formats){
+    output <- upper_case_formats[upper_case_formats %in% toupper(resource_metadata$format)]
+  } else if(tolower(resource_metadata$format) %in% lower_case_formats){
+    output <- lower_case_formats[lower_case_formats %in% resource_metadata$format]
+  } else if (tolower(resource_metadata$format) == "xls"){
+    output <- "EXCEL"
+  } else if (tolower(resource_metadata$format) %in% tolower(geo_formats)){
+    if(tolower(resource_metadata$format) == "geojson"){
+      output <- "GeoJSON"
+    } else if(tolower(resource_metadata$format) == "geotiff"){
+      output <- "GeoTIFF"
+    } else if(tolower(resource_metadata$format) == "SHP" | tolower(resource_metadata$format) == "SHP ZIP"){
+      output <- "SHP ZIP"
+    } else{
+      output <- "KML"
+    }
+  }else{
+    output <- "OTHER"
+  }
+  
+  return(output)
+}
+
