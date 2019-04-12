@@ -12,9 +12,12 @@
 map_eex_metadata_resource <- function(metadata_list, lovs) {
   
   lkup_values   <- resource_master_lookup
-  ddh_formats   <- tolower(lovs[lovs$machine_name == "field_format","list_value_name"])
   output        <- list()
   resource_type <- list()
+  
+  ddh_formats         <- lovs[lovs$machine_name == "field_format","list_value_name"]
+  lower_case_formats  <- c("docx","data","xlsx","html","txt")
+  upper_case_formats  <- ddh_formats[!ddh_formats %in% lower_case_formats]
   
   # Vector of Geospatial Extensions
   geo_ext <- c(
@@ -62,9 +65,11 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
     
     # Map field_format
     resource_meta$format <- gsub("^\\.", "",resource_meta$format)
-    if(tolower(resource_meta$format) %in% ddh_formats){
-       temp$field_format <- toupper(ddh_formats[ddh_formats %in% tolower(resource_meta$format)])
-    } else if(resource_meta$format == "XLS" | resource_meta$format == "XLSX"){
+    if(toupper(resource_meta$format) %in%  upper_case_formats){
+       temp$field_format <- upper_case_formats[upper_case_formats %in% toupper(resource_meta$format)]
+    } else if(tolower(resource_meta$format) %in% lower_case_formats){
+      temp$field_format <- lower_case_formats[lower_case_formats %in% resource_meta$format]
+    } else if (tolower(resource_meta$format) == "xls"){
       temp$field_format <- "EXCEL"
     } else{
       temp$field_format <- "OTHER"
