@@ -42,14 +42,6 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
       }
     }
 
-    #TODO NEED TO confirm from JODIE if tilejson is TRUE only for geoJSON
-    # Map field_link_api
-    if(!isFALSE(resource_meta$tilejson)){
-      temp$field_link_api <- resource_meta$tilejson
-    } else{
-      temp$field_link_api <- resource_meta$url
-    }
-
     # Add constant metadata
     temp$field_wbddh_resource_type <- "Download"
     temp$field_wbddh_data_class    <- "Public"
