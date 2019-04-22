@@ -34,9 +34,9 @@ invalid_controlled_vocab  <- eex_ddh_vocab_df %>%
   filter(!(machine_name %in% ignore)) %>%
   anti_join(ddh_lovs_df, by = "machine_name")
 
-invalid_constant  <- constant_lookup %>% 
-  filter(machine_name != "field_wbddh_dsttl_upi" & machine_name != "field_wbddh_collaborator_upi") %>% 
-  anti_join(ddh_lovs_df, by = "machine_name") 
+invalid_constant  <- constant_lookup %>%
+  filter(machine_name != "field_wbddh_dsttl_upi" & machine_name != "field_wbddh_collaborator_upi" & machine_name !="og_group_ref") %>%
+  anti_join(ddh_lovs_df, by = "machine_name")
 
 assertthat::assert_that(nrow(invalid_controlled_vocab) == 0, msg = 'Invalid values present in eex_ddh_vocab_df')
 assertthat::assert_that(nrow(invalid_constant) == 0, msg = 'Invalid values present in constant_lookup')
