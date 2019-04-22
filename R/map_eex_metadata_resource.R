@@ -10,11 +10,11 @@
 #'
 
 map_eex_metadata_resource <- function(metadata_list, lovs) {
-  
+
   lkup_values   <- resource_master_lookup
   output        <- list()
   resource_type <- list()
-  
+
   # Vector of Geospatial Extensions
   geo_ext <- c(
     "SHP",
@@ -25,7 +25,7 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
     "Esri REST",
     "geopackage"
   )
-  
+
   # Loop over resources -----------------------------------------------------
   for(i in seq_along(metadata_list$resources)){
     temp                <- list()
@@ -34,42 +34,46 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
 
     # Map values to DDH controlled vocabulary ---------------------------------
     for (j in seq_along(resource_meta)) {
-      machine_name <- lkup_values %>%
-        filter(eex_field_JSON == names(resource_meta[j])) %>%
-        select(machine_name)
-        
+      # machine_name <- lkup_values %>%
+      #   filter(eex_field_JSON == names(resource_meta[j])) %>%
+      #   select(machine_name)
+
+      machine_name <- dplyr::filter(lkup_values, eex_field_JSON == names(resource_meta[j])) %>%
+        dplyr::select("machine_name")
+
       if(nrow(machine_name) > 0){
         temp[[as.character(machine_name)]]  <- resource_meta[[j]]
       }
     }
-    
+
     # Add constant metadata
     temp$field_wbddh_resource_type <- "Download"
     temp$field_wbddh_data_class    <- "Public"
-    
-    # Format Description 
+
+    # Format Description
     temp$body <- gsub("[\n\r]", "", temp$body)
-    
+
     # Order resources
     temp$field_resource_weight <- i
-    
+
     # Add constant metadata
-    constant_metadata <- lkup_values %>% filter(is.na(eex_value) & is.na(eex_field_JSON))
+    # constant_metadata <- lkup_values %>% filter(is.na(eex_value) & is.na(eex_field_JSON))
+    constant_metadata <- dplyr::filter(lkup_values, is.na(eex_value) & is.na(eex_field_JSON))
     for (k in 1:nrow(constant_metadata)){
       temp[[constant_metadata[k,]$machine_name]] <- constant_metadata[k,]$list_value_name
     }
-    
+
     # Map resource extensions
     temp$field_format <- map_resource_formats(resource_metadata = resource_meta, lovs = lovs)
     output[[i]]       <- temp
   }
-  
+
   # Check if Geospatial Data Type
-  if(length(intersect(unlist(resource_type), tolower(geo_ext))) > 0){
+  if(length(dplyr::intersect(unlist(resource_type), tolower(geo_ext))) > 0){
     output$field_wbddh_data_type <- "Geospatial"
   } else{
     output$field_wbddh_data_type <- "Other"
   }
-  
+
   return(output)
 }

@@ -20,21 +20,21 @@ update_resources <- function(dataset_nid,
                             root_url = dkanr::get_url(),
                             credentials = list(cookie = dkanr::get_cookie(),
                                                token = dkanr::get_token())) {
-  
+
  # Create list of field_ddh_harvest_sys_id with resource_nids as keys
  harv_ids <- list()
  for(i in seq_along(resource_nid)){
    res_meta <- ddhconnect::get_metadata(resource_nid[[i]])
    harv_ids[resource_nid[[i]]] <- res_meta$field_ddh_harvest_sys_id$und[[1]]$value
- } 
- 
+ }
+
  # Classify current and new resources
  current  <- list()
  new      <- list()
  count    <- 0
  for(j in seq_along(metadata_resources)){
    if(metadata_resources[[j]]$field_ddh_harvest_sys_id %in% harv_ids){
-     res_nid          <- names(harv_ids[(harv_ids %in% metadata_resources[[j]])])
+     res_nid            <- names(harv_ids[(harv_ids %in% metadata_resources[[j]])])
      current[[res_nid]] <- metadata_resources[[j]]$field_ddh_harvest_sys_id
    }
    else{
@@ -42,20 +42,20 @@ update_resources <- function(dataset_nid,
      new[[count]] <- metadata_resources[[j]]$field_ddh_harvest_sys_id
    }
  }
- 
+
  # Classify outdated resources (i.e resources not present in Energy Portal Dataset)
  old    <- list()
  for(k in seq_along(harv_ids)){
    if(!(harv_ids[[k]] %in% current) & !(harv_ids[[k]] %in% new)){
-     old[[names(harv_ids[k])]] <- harv_ids[[k]] 
+     old[[names(harv_ids[k])]] <- harv_ids[[k]]
    }
  }
- 
+
  # Remove outdated resources
  lapply(names(old), function(x){
    ddhconnect::delete_dataset(x)
  })
- 
+
  if(length(old) > 0 ){
    print(paste0(length(old), "  old resources removed."))
  }
@@ -63,10 +63,10 @@ update_resources <- function(dataset_nid,
  update_current_resources(dataset_nid, metadata_resources,
                           current, ddh_fields, lovs,
                           root_url, credentials)
- 
+
  # Add new resources
  add_new_resources(dataset_nid, metadata_resources,
                    new, ddh_fields, lovs,
                    root_url, credentials)
- 
+
 }
