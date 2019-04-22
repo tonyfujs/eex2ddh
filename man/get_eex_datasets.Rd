@@ -4,7 +4,7 @@
 \alias{get_eex_datasets}
 \title{get_eex_datasets}
 \usage{
-get_eex_datasets(token, origin)
+get_eex_datasets(token)
 }
 \arguments{
 \item{token}{character: Energy.Info API authentication token}

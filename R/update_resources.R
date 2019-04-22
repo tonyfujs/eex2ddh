@@ -6,6 +6,7 @@
 #' @param resource_nid vector: vector of resources to attach
 #' @param metadata_resources list: list of resource metadata
 #' @param lovs dataframe: lookup table of the data catalog tids and values
+#' @param ddh_fields dataframe: table of all the data catalog fields by node type
 #' @param root_url character: API root URL
 #' @param credentials list: object returned by the dkanr::get_credentials() function
 #'
