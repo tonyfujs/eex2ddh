@@ -34,10 +34,6 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
 
     # Map values to DDH controlled vocabulary ---------------------------------
     for (j in seq_along(resource_meta)) {
-      # machine_name <- lkup_values %>%
-      #   filter(eex_field_JSON == names(resource_meta[j])) %>%
-      #   select(machine_name)
-
       machine_name <- dplyr::filter(lkup_values, eex_field_JSON == names(resource_meta[j])) %>%
         dplyr::select("machine_name")
 
@@ -57,7 +53,6 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
     temp$field_resource_weight <- i
 
     # Add constant metadata
-    # constant_metadata <- lkup_values %>% filter(is.na(eex_value) & is.na(eex_field_JSON))
     constant_metadata <- dplyr::filter(lkup_values, is.na(eex_value) & is.na(eex_field_JSON))
     for (k in 1:nrow(constant_metadata)){
       temp[[constant_metadata[k,]$machine_name]] <- constant_metadata[k,]$list_value_name
