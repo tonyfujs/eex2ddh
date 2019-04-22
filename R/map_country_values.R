@@ -32,7 +32,7 @@ map_country_values <- function(metadata_list, output) {
   }
 
   # Make account of Country Codes not mapped to DDH
-  country_codes <- filter(lkup_values, eex_field_JSON == "country_code") %>%
+  country_codes <- dplyr::filter(lkup_values, eex_field_JSON == "country_code") %>%
     dplyr::select("eex_value") %>%
     unlist()
   invalid_country_codes   <- unique(metadata_list$country_code[!metadata_list$country_code %in% country_codes])
