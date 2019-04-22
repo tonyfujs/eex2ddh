@@ -5,6 +5,7 @@
 #' @param metadata_list list: output of extract_eex_metadata()
 #' @param output list: output of map_eex_metadata_dataset()
 #' @import dplyr
+#' @importFrom rlang .data
 #' @return list
 #' @export
 #'
@@ -13,9 +14,10 @@ map_country_values <- function(metadata_list, output) {
 
   # Merge Country and Region from EEX
   metadata_list$country_code <- c(metadata_list$country_code, metadata_list$region)
-  lkup_values <- dataset_master_lookup
+  lkup_values <- eex2ddh::dataset_master_lookup
+  
   temp <- lapply(metadata_list$country_code, function(x){
-    dplyr::filter(lkup_values, eex_field_JSON == "country_code" & eex_value == x) %>%
+    dplyr::filter(lkup_values, .data$eex_field_JSON == "country_code" & .data$eex_value == x) %>%
       dplyr::select("list_value_name")
   }) %>% unlist()
 
@@ -32,7 +34,7 @@ map_country_values <- function(metadata_list, output) {
   }
 
   # Make account of Country Codes not mapped to DDH
-  country_codes <- dplyr::filter(lkup_values, eex_field_JSON == "country_code") %>%
+  country_codes <- dplyr::filter(lkup_values, .data$eex_field_JSON == "country_code") %>%
     dplyr::select("eex_value") %>%
     unlist()
   invalid_country_codes   <- unique(metadata_list$country_code[!metadata_list$country_code %in% country_codes])

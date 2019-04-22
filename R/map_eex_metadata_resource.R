@@ -5,13 +5,14 @@
 #' @param metadata_list list: output of extract_eex_metadata()
 #' @param lovs dataframe: lookup table of the data catalog tids and values
 #' @import dplyr
+#' @importFrom rlang .data
 #' @return list
 #' @export
 #'
 
 map_eex_metadata_resource <- function(metadata_list, lovs) {
 
-  lkup_values   <- resource_master_lookup
+  lkup_values   <- eex2ddh::resource_master_lookup
   output        <- list()
   resource_type <- list()
 
@@ -34,7 +35,7 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
 
     # Map values to DDH controlled vocabulary ---------------------------------
     for (j in seq_along(resource_meta)) {
-      machine_name <- dplyr::filter(lkup_values, eex_field_JSON == names(resource_meta[j])) %>%
+      machine_name <- dplyr::filter(lkup_values, .data$eex_field_JSON == names(resource_meta[j])) %>%
         dplyr::select("machine_name")
 
       if(nrow(machine_name) > 0){
@@ -53,7 +54,7 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
     temp$field_resource_weight <- i
 
     # Add constant metadata
-    constant_metadata <- dplyr::filter(lkup_values, is.na(eex_value) & is.na(eex_field_JSON))
+    constant_metadata <- dplyr::filter(lkup_values, is.na(.data$eex_value) & is.na(.data$eex_field_JSON))
     for (k in 1:nrow(constant_metadata)){
       temp[[constant_metadata[k,]$machine_name]] <- constant_metadata[k,]$list_value_name
     }

@@ -6,7 +6,7 @@
 #' @export
 #'
 
-get_eex_datasets <- function(token, origin) {
+get_eex_datasets <- function(token) {
   
   # Retreive World Bank datasets that were created in the Energy Info portal
   #TODO

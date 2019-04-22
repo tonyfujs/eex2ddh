@@ -6,15 +6,16 @@
 #' @param output list: output of map_eex_metadata_dataset()
 #'
 #' @import dplyr
+#' @importFrom rlang .data
 #' @return list
 #' @export
 #'
 
 map_license_values <- function(metadata_list, output) {
-  lkup_values <- dataset_master_lookup
+  lkup_values <- eex2ddh::dataset_master_lookup
   if(length(metadata_list$license_title) > 0){
       temp <- lapply(metadata_list$license_title, function(x){
-        dplyr::filter(lkup_values, eex_field_JSON == "license_title" & eex_value == x) %>%
+        dplyr::filter(lkup_values, .data$eex_field_JSON == "license_title" & .data$eex_value == x) %>%
           dplyr::select("list_value_name")
         }) %>% unlist()
 

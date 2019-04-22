@@ -26,8 +26,8 @@ clean_date <- function(dt) {
       "nov" = "11",
       "dec" = "12"
     )
-    
-    to_replace  <- tolower(str_extract(dt, "(?!\\-)\\D{3}"))
+
+    to_replace  <- tolower(stringr::str_extract(dt, "(?!\\-)\\D{3}"))
     dt          <- gsub(to_replace, months[[to_replace]], tolower(dt))
     dt          <- strptime(dt, "%d-%m-%Y")
     dt          <- format(dt, "%Y-%m-%d")
@@ -36,7 +36,7 @@ clean_date <- function(dt) {
     dt <- gsub("T", " ", dt)
     dt <- strftime(dt, format = "%Y-%m-%d %H:%M:%S")
   }
-  
+
 
   return(dt)
 }
@@ -55,7 +55,7 @@ safe_see_if <- function(file_value, orig_value, field_name) {
 is.same <- function(file_value, orig_value, field_name) {
   is.empty(file_value) && is.empty(orig_value) ||
     is.character(file_value) && is.character(orig_value) && (gsub("[\n]", "", file_value) == gsub("[\n]", "", orig_value))
-  
+
 }
 
 is.empty <- function(s) {
@@ -78,7 +78,7 @@ update_current_resources <- function(dataset_nid, metadata_resources,
                                                     ddh_fields = ddh_fields,
                                                     lovs = lovs,
                                                     root_url = root_url)
-  
+
        resp_res <- ddhconnect::update_resource(nid = names(current[current %in% metadata_resources[[i]]$field_ddh_harvest_sys_id]),
                                                body = json_res,
                                                root_url = root_url,
@@ -110,18 +110,18 @@ add_new_resources <- function(dataset_nid, metadata_resources,
 }
 
 map_resource_formats <- function(resource_metadata, lovs){
-  
+
   # Filter out DDH extensions
   ddh_formats         <- lovs[lovs$machine_name == "field_format","list_value_name"]
 
   # Seperate lower case and upper case formats for DDH
   lower_case_formats  <- c("docx","data","xlsx","html","txt")
   upper_case_formats  <- ddh_formats[!ddh_formats %in% lower_case_formats]
-  
+
   # Account for Geospatial formats
   geo_formats         <- c("GeoJSON", "SHP ZIP", "KML", "GeoTIFF")
   upper_case_formats  <- upper_case_formats[!upper_case_formats %in% geo_formats]
-  
+
   # Map field_format
   resource_metadata$format <- gsub("^\\.", "", resource_metadata$format)
   if(toupper(resource_metadata$format) %in%  upper_case_formats){
@@ -143,7 +143,7 @@ map_resource_formats <- function(resource_metadata, lovs){
   }else{
     output <- "OTHER"
   }
-  
+
   return(output)
 }
 
