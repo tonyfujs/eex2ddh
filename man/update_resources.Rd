@@ -16,6 +16,8 @@ update_resources(dataset_nid, resource_nid, metadata_resources,
 
 \item{metadata_resources}{list: list of resource metadata}
 
+\item{ddh_fields}{dataframe: table of all the data catalog fields by node type}
+
 \item{lovs}{dataframe: lookup table of the data catalog tids and values}
 
 \item{root_url}{character: API root URL}

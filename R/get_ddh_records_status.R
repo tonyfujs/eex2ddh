@@ -20,11 +20,11 @@ get_ddh_records_status <- function(root_url = dkanr::get_url(),
   # EEX harvest
   eex_df                      <- get_eex_datasets()
   eex_df$eex_internal_updated <- as.numeric(lubridate::ymd_hms(eex_df$eex_internal_updated))
-  
+
   # Ignore SE4ALL & ENERGYDATA.INFO - User Manual
   eex_df <- eex_df[eex_df$eex_internal_id != "538a3ba2-f218-42b2-a79c-3a5b7603556e", ]
   eex_df <- eex_df[eex_df$eex_internal_id != "6b7c56a5-f15d-4cb8-b9f2-cf8814a6d271", ]
-  
+
   # Combine datasets
   full_list         <- dplyr::left_join(eex_df, ddh_df, by = "eex_internal_id")
   full_list$status  <- NA
@@ -37,11 +37,11 @@ get_ddh_records_status <- function(root_url = dkanr::get_url(),
   full_list$sync_status[full_list$status == "current" & full_list$time_diff <= 3600]  <- "in sync"
   full_list$sync_status[full_list$status == "current" & full_list$time_diff > 3600]   <- "out of sync"
   full_list$time_diff <- NULL
-  
+
   # Identify duplicates
-  full_list$oldest_timestamp <- ave(full_list$ddh_created, full_list$eex_internal_id, FUN = min)
+  full_list$oldest_timestamp <- stats::ave(full_list$ddh_created, full_list$eex_internal_id, FUN = min)
   full_list$duplicate_status <- ifelse(full_list$ddh_created == full_list$oldest_timestamp, "original", "duplicate")
   full_list$oldest_timestamp <- NULL
-  
+
   return(full_list)
 }
