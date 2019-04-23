@@ -45,21 +45,30 @@ add_new_dataset <- function(metadata_list,
                                          credentials = credentials)
   
   # Create Resources
-  for (i in seq_along(metadata_resources)){
-    json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
-                                                 dataset_nid = resp_dat$nid,
-                                                 publication_status = "published",
-                                                 ddh_fields = ddh_fields,
-                                                 lovs = lovs,
-                                                 root_url = root_url)
+  tryCatch({
     
-    resp_res <- ddhconnect::create_resource(body = json_res,
-                                            root_url = root_url,
-                                            credentials = credentials)
+    for (i in seq_along(metadata_resources)){
+      json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
+                                                   dataset_nid = resp_dat$nid,
+                                                   publication_status = "published",
+                                                   ddh_fields = ddh_fields,
+                                                   lovs = lovs,
+                                                   root_url = root_url)
+      
+      resp_res <- ddhconnect::create_resource(body = json_res,
+                                              root_url = root_url,
+                                              credentials = credentials)
+      
+    }
     
-  }
+    print(resp_dat)
+    
+  }, error = function(e){
+    
+    print(paste("Error:",e,"; with creating resources for", resp_dat))
+  })
   
-  # test created dataset
+  # Test created dataset
   metadata_dataset_test <- ddhconnect::get_metadata(nid = resp_dat$nid,
                                                root_url = root_url,
                                                credentials = credentials)
@@ -68,5 +77,4 @@ add_new_dataset <- function(metadata_list,
                        metadata_list = metadata_dataset,
                        root_url = root_url,
                        credentials = credentials)
-  print(resp_dat)
 }
