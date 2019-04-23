@@ -13,15 +13,10 @@
 
 map_license_values <- function(metadata_list, output) {
   lkup_values <- eex2ddh::dataset_master_lookup
-  if(length(metadata_list$license_title) > 0){
-      temp <- lapply(metadata_list$license_title, function(x){
-        dplyr::filter(lkup_values, .data$eex_field_JSON == "license_title" & .data$eex_value == x) %>%
-          dplyr::select("list_value_name")
-        }) %>% unlist()
-
-    if(length(temp) > 0){
-      output$field_license_wbddh <- temp
-    }
+  temp <- dplyr::filter(lkup_values, .data$eex_field_JSON == "license_title" & .data$eex_value == metadata_list$license_title)
+  if(length(temp) > 0){
+    output$field_license_wbddh <- temp$list_value_name
   }
+  
   return(output)
 }
