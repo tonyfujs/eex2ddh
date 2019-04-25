@@ -54,26 +54,25 @@ update_existing_dataset <- function(metadata_list,
 
   resource_nid <- ddhconnect::get_resource_nids(metadata_dataset_ddh)
 
-
-  # Create Resources
   tryCatch({
-
+    # Update Resources
     update_resources(resp_dat$nid, resource_nid, metadata_resources)
-    print(resp_dat)
+
+    # Test created dataset
+    metadata_dataset_test <- ddhconnect::get_metadata(nid = resp_dat$nid,
+                                                      root_url = root_url,
+                                                      credentials = credentials)
+
+    test_created_dataset(dataset_metadata = metadata_dataset_test,
+                         metadata_list = metadata_dataset,
+                         root_url = root_url,
+                         credentials = credentials)
+
+    return(resp_dat$uri)
 
   }, error = function(e){
 
-    return(paste("Error:",e,"; with creating resources for", resp_dat))
+      return(paste("Error:",e,"; with creating resources for", resp_dat$uri))
 
     })
-
-  # Test created dataset
-  metadata_dataset_test <- ddhconnect::get_metadata(nid = resp_dat$nid,
-                                                    root_url = root_url,
-                                                    credentials = credentials)
-
-  test_created_dataset(dataset_metadata = metadata_dataset_test,
-                       metadata_list = metadata_dataset,
-                       root_url = root_url,
-                       credentials = credentials)
 }
