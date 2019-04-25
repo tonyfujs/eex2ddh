@@ -47,14 +47,13 @@ update_existing_dataset <- function(metadata_list,
                                          root_url = root_url,
                                          credentials = credentials)
 
-  # Update Resources
-  metadata_dataset_ddh <- ddhconnect::get_metadata(nid = resp_dat$nid,
-                                               root_url = root_url,
-                                               credentials = credentials)
-
-  resource_nid <- ddhconnect::get_resource_nids(metadata_dataset_ddh)
-
   tryCatch({
+    metadata_dataset_ddh <- ddhconnect::get_metadata(nid = resp_dat$nid,
+                                                     root_url = root_url,
+                                                     credentials = credentials)
+
+    resource_nid <- ddhconnect::get_resource_nids(metadata_dataset_ddh)
+
     # Update Resources
     update_resources(resp_dat$nid, resource_nid, metadata_resources)
 
