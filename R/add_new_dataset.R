@@ -48,6 +48,7 @@ add_new_dataset <- function(metadata_list,
   tryCatch({
 
     for (i in seq_along(metadata_resources)){
+
       json_res <- ddhconnect::create_json_resource(values = metadata_resources[[i]],
                                                    dataset_nid = resp_dat$nid,
                                                    publication_status = "published",
@@ -72,11 +73,13 @@ add_new_dataset <- function(metadata_list,
                          credentials = credentials)
 
 
-    return(resp_dat$uri)
+    return(cat(resp_dat$uri))
 
   }, error = function(e){
 
-      return(paste("Error:",e,"; with creating resources for", resp_dat$uri))
+    message <- paste("Error:",e,"; with creating resources for", resp_dat$uri)
+
+    return(cat(message))
   })
 
 }
