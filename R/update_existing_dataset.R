@@ -20,50 +20,60 @@ update_existing_dataset <- function(metadata_list,
                                     root_url = dkanr::get_url(),
                                     credentials = list(cookie = dkanr::get_cookie(),
                                                        token = dkanr::get_token())) {
-  
+
   # Format raw metadata for Dataset
   metadata_dataset  <- map_eex_metadata_dataset(metadata_list)
-  
+
   # Map external metadata for Dataset
   metadata_dataset  <- map_external_metadata(metadata_list, metadata_dataset)
-  
+
   # Format raw metadata for Resources
   metadata_resources <- map_eex_metadata_resource(metadata_list, lovs)
-  
+
   # Add Data Type to Dataset
   metadata_dataset$field_wbddh_data_type   <- metadata_resources$field_wbddh_data_type
   metadata_resources$field_wbddh_data_type <- NULL
-  
+
   # Update Dataset
   json_dat <- ddhconnect::create_json_dataset(values = metadata_dataset,
                                               publication_status = "published",
                                               ddh_fields = ddh_fields,
                                               lovs = lovs,
                                               root_url = root_url)
-  
+
   dataset_nid <- master[master$eex_internal_id == metadata_list$id, "ddh_nids"]
   resp_dat <- ddhconnect::update_dataset(nid = dataset_nid,
                                          body = json_dat,
                                          root_url = root_url,
                                          credentials = credentials)
-  
-  # Update Resources
-  metadata_dataset_ddh <- ddhconnect::get_metadata(nid = resp_dat$nid,
-                                               root_url = root_url,
-                                               credentials = credentials)
-  
-  resource_nid <- ddhconnect::get_resource_nids(metadata_dataset_ddh)
-    
-  update_resources(resp_dat$nid, resource_nid, metadata_resources)
-  
-  # Test created dataset
-  metadata_dataset_test <- ddhconnect::get_metadata(nid = resp_dat$nid,
-                                                    root_url = root_url,
-                                                    credentials = credentials)
-  
-  test_created_dataset(dataset_metadata = metadata_dataset_test,
-                       metadata_list = metadata_dataset,
-                       root_url = root_url,
-                       credentials = credentials)
-  print(resp_dat)
+
+  tryCatch({
+    metadata_dataset_ddh <- ddhconnect::get_metadata(nid = resp_dat$nid,
+                                                     root_url = root_url,
+                                                     credentials = credentials)
+
+    resource_nid <- ddhconnect::get_resource_nids(metadata_dataset_ddh)
+
+    # Update Resources
+    update_resources(resp_dat$nid, resource_nid, metadata_resources)
+
+    # Test created dataset
+    metadata_dataset_test <- ddhconnect::get_metadata(nid = resp_dat$nid,
+                                                      root_url = root_url,
+                                                      credentials = credentials)
+
+    test_created_dataset(dataset_metadata = metadata_dataset_test,
+                         metadata_list = metadata_dataset,
+                         root_url = root_url,
+                         credentials = credentials)
+
+    return(resp_dat$uri)
+
+  }, error = function(e){
+
+    message <- paste("Error:",e,"; with creating resources for", resp_dat$uri)
+
+    return(message)
+
+    })
 }

@@ -43,10 +43,6 @@ map_eex_metadata_resource <- function(metadata_list, lovs) {
       }
     }
 
-    # Add constant metadata
-    temp$field_wbddh_resource_type <- "Download"
-    temp$field_wbddh_data_class    <- "Public"
-
     # Format Description
     temp$body <- gsub("[\n\r]", "", temp$body)
 
