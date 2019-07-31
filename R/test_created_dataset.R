@@ -17,14 +17,13 @@ test_created_dataset <- function(dataset_metadata, metadata_list,
                                  root_url = dkanr::get_url(),
                                  credentials = list(cookie = dkanr::get_cookie(),
                                                     token = dkanr::get_token())) {
-  
+
   safe_see_if(dataset_metadata$workbench_moderation$current$published, "1", "status")
   safe_see_if(dataset_metadata$title, metadata_list$title, "title")
   safe_see_if(dataset_metadata$field_wbddh_dsttl_upi$und[[1]]$target_id, metadata_list$field_wbddh_dsttl_upi, "field_wbddh_dsttl_upi")
   safe_see_if(dataset_metadata$field_wbddh_collaborator_upi$und[[1]]$target_id, metadata_list$field_wbddh_collaborator_upi[[1]], "field_wbddh_collaborator_upi")
-  safe_see_if(dataset_metadata$field_wbddh_collaborator_upi$und[[2]]$target_id, metadata_list$field_wbddh_collaborator_upi[[2]], "field_wbddh_collaborator_upi")
-  
-  
+
+
   machine_names_value <- c(
     "body",
     "field_ddh_harvest_sys_id",
@@ -32,12 +31,12 @@ test_created_dataset <- function(dataset_metadata, metadata_list,
     "field_wbddh_release_date",
     "field_ddh_external_contact_email"
     )
-  
+
   sapply(machine_names_value, check_value,
          dataset_metadata = dataset_metadata,
          input_metadata = metadata_list
   )
-  
+
   machine_names_tid <- c(
     "field_ddh_harvest_src",
     "field_license_wbddh",
@@ -54,7 +53,7 @@ test_created_dataset <- function(dataset_metadata, metadata_list,
     "field_wbddh_gps_ccsas",
     "field_wbddh_data_class"
     )
-  
+
   sapply(machine_names_tid, check_lov,
          dataset_metadata = dataset_metadata,
          input_metadata = metadata_list,
