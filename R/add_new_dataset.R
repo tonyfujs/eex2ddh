@@ -28,7 +28,16 @@ add_new_dataset <- function(metadata_list,
 
   # Format raw metadata for Resources
   metadata_resources <- map_eex_metadata_resource(metadata_list, lovs)
-
+  
+  
+  #############
+  #HERE
+  #############
+  # TODO: NEED TO COMPLETE & Test
+  # Check if resources are leading to 404 Errors
+  broken_urls <- lapply(metadata_resources, url_check)
+  
+  
   # Add Data Type to Dataset
   metadata_dataset$field_wbddh_data_type   <- metadata_resources$field_wbddh_data_type
   metadata_resources$field_wbddh_data_type <- NULL
