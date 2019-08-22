@@ -147,3 +147,13 @@ map_resource_formats <- function(resource_metadata, lovs){
   return(output)
 }
 
+
+# Function to check if url lead to 404 Error
+url_check <- function(link){
+  result <- httr::http_status(httr::GET(link))
+  if(result$category == "Success"){
+    return(TRUE)
+  } else{
+    return(FALSE)
+  }
+}
