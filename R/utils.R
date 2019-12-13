@@ -147,7 +147,6 @@ map_resource_formats <- function(resource_metadata, lovs){
   return(output)
 }
 
-
 # Function to check if url lead to 404 Error
 url_check <- function(link){
   result <- httr::http_status(httr::GET(link))
@@ -157,3 +156,10 @@ url_check <- function(link){
     return(FALSE)
   }
 }
+
+# Check's if input is blank
+is_blank <- function(input) {
+  return(gtools::invalid(input) || all(input == ""))
+}
+
+

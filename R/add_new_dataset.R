@@ -33,13 +33,21 @@ add_new_dataset <- function(metadata_list,
   metadata_dataset$field_wbddh_data_type   <- metadata_resources$field_wbddh_data_type
   metadata_resources$field_wbddh_data_type <- NULL
   
+  # Check for blank urls
+  blank_urls <- purrr::map(purrr::map(metadata_resources, "field_link_api"), is_blank)
+  
+  # Abort if blank URLs present
+  if(TRUE %in% blank_urls){
+    return("ABORTING HARVEST as Resources have blank URLs")
+  }
+  
   # Check if resources are leading to 404 Errors
-  broken_urls <- lapply(metadata_resources, function(x){
+  valid_urls <- lapply(metadata_resources, function(x){
     url_check(x[["field_link_api"]])
   })
   
-  # Throw error is broken URLs present
-  if(FALSE %in% broken_urls){
+  # Throw error if broken URLs present
+  if(FALSE %in% valid_urls){
     stop("Resources have broken URLs")
   }
   
