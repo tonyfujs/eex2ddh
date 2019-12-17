@@ -127,7 +127,7 @@ map_resource_formats <- function(resource_metadata, lovs){
   if(toupper(resource_metadata$format) %in%  upper_case_formats){
     output <- upper_case_formats[upper_case_formats %in% toupper(resource_metadata$format)]
   } else if(tolower(resource_metadata$format) %in% lower_case_formats){
-    output <- lower_case_formats[lower_case_formats %in% resource_metadata$format]
+    output <- lower_case_formats[lower_case_formats %in% tolower(resource_metadata$format)]
   } else if (tolower(resource_metadata$format) == "xls"){
     output <- "EXCEL"
   } else if (tolower(resource_metadata$format) %in% tolower(geo_formats)){
