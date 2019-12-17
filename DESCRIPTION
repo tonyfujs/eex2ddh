@@ -18,7 +18,6 @@ Imports: assertthat,
     dplyr,
     jsonlite,
     stringr,
-    ddhconnect,
     gtools,
     stats,
     rlang
